@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.ShareFileMapper">
+
+    <resultMap id="BaseResultMap" type="com.keke.entities.Files">
+        <id column="fid" jdbcType="INTEGER" property="fid" />
+        <result column="original_url" jdbcType="VARCHAR" property="originalUrl" />
+        <result column="pdf_url" jdbcType="VARCHAR" property="pdfUrl" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+        <result column="filename" jdbcType="VARCHAR" property="filename" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="layer" jdbcType="INTEGER" property="layer" />
+        <result column="click" jdbcType="INTEGER" property="click" />
+        <result column="recentopen" jdbcType="TIMESTAMP" property="recentopen" />
+    </resultMap>
+
+    <delete id="deleteShare" parameterType="java.lang.String">
+        delete from share where sid = #{sid, jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insertShare">
+    insert into share (sid,fid,username,shareUrl,createTime)
+    values (#{sid,jdbcType=VARCHAR},#{fid,jdbcType=INTEGER},#{username,jdbcType=VARCHAR},#{shareUrl,jdbcType=VARCHAR},now())
+    </insert>
+
+    <select id="getShare" parameterType="java.lang.String" resultType="com.keke.entities.Share">
+        select * from share where sid = #{sid,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getShareDetail" parameterType="java.lang.String" resultType="com.keke.entities.ShareDetail">
+        select `share`.fid, files.filename, `share`.createTime, `share`.username, `share`.sid from `share`, files where files.fid = `share`.fid and `share`.sid = #{sid,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getFileDetail" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select * from files where fid = #{fid,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertFiles" parameterType="com.keke.entities.Files">
+    insert into files (original_url, pdf_url,filename,username,create_time,layer,click)
+    values (#{originalUrl,jdbcType=VARCHAR}, #{pdfUrl,jdbcType=VARCHAR},
+      #{filename,jdbcType=VARCHAR},#{username,jdbcType=VARCHAR},now(),#{layer, jdbcType=INTEGER},0)
+    </insert>
+
+</mapper>

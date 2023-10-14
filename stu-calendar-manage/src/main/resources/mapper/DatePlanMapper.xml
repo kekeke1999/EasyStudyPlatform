@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.DatePlanMapper">
+  <resultMap id="BaseResultMap" type="com.keke.domain.DatePlan">
+    <id column="hid" jdbcType="INTEGER" property="hid" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="last_time" jdbcType="TIME" property="lastTime" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+    <result column="main" jdbcType="INTEGER" property="main" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    hid, begin_time, end_time, last_time, content, username, tag, main
+  </sql>
+
+  <select id="selectByDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dateplan
+    where begin_time like concat(concat('%',#{date}),'%') and username = #{username,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteDatePlan">
+    delete from dateplan
+    where hid = #{hid,jdbcType=INTEGER} and username = #{username,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertDatePlan" parameterType="com.keke.domain.DatePlan">
+    insert into dateplan (begin_time, end_time,
+      last_time, content, username,
+      tag, main)
+    values (#{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+      #{lastTime,jdbcType=TIME}, #{content,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{tag,jdbcType=VARCHAR}, #{main,jdbcType=INTEGER})
+  </insert>
+
+  <update id="updateMain" parameterType="java.lang.String">
+    update dateplan
+    set main = 0
+    where main = 1 and username = #{username,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateDatePlan" parameterType="com.keke.domain.DatePlan">
+    update dateplan
+    <set>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIME},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="main != null">
+        main = #{main,jdbcType=INTEGER},
+      </if>
+    </set>
+    where hid = #{hid,jdbcType=INTEGER}
+  </update>
+
+
+
+
+
+
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dateplan
+    where hid = #{hid,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from dateplan
+    where hid = #{hid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.keke.domain.DatePlan">
+    insert into dateplan (hid, begin_time, end_time,
+      last_time, content, username,
+      tag, main)
+    values (#{hid,jdbcType=INTEGER}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+      #{lastTime,jdbcType=TIME}, #{content,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{tag,jdbcType=VARCHAR}, #{main,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keke.domain.DatePlan">
+    insert into dateplan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="hid != null">
+        hid,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="lastTime != null">
+        last_time,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="tag != null">
+        tag,
+      </if>
+      <if test="main != null">
+        main,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="hid != null">
+        #{hid,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        #{lastTime,jdbcType=TIME},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="main != null">
+        #{main,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keke.domain.DatePlan">
+    update dateplan
+    <set>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIME},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="main != null">
+        main = #{main,jdbcType=INTEGER},
+      </if>
+    </set>
+    where hid = #{hid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keke.domain.DatePlan">
+    update dateplan
+    set begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      last_time = #{lastTime,jdbcType=TIME},
+      content = #{content,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      main = #{main,jdbcType=INTEGER}
+    where hid = #{hid,jdbcType=INTEGER}
+  </update>
+
+
+</mapper>

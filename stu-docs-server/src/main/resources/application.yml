@@ -1,0 +1,32 @@
+server:
+  port: 8002
+spring:
+  application:
+    name: stu-docs-server
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 2048MB
+      max-file-size: 1024MB
+
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ******
+    url: jdbc:mysql://localhost:3306/easystudyplatform?useUnicode=true&characterEncoding=utf-8
+
+
+com:
+  liumapp:
+    workable-converter:
+      libreofficePath: "/Applications/LibreOffice.app/Contents"
+
+mybatis:
+  config-location: classpath:config/sqlMapConfig.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+keke:
+  file:
+    root:
+      path: /Users/uu/Desktop/1

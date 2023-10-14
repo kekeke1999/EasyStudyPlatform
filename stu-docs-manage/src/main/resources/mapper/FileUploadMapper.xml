@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.FileUploadMapper">
+    <resultMap id="BaseResultMap" type="com.keke.entities.Files">
+        <id column="fid" jdbcType="INTEGER" property="fid" />
+        <result column="original_url" jdbcType="VARCHAR" property="originalUrl" />
+        <result column="pdf_url" jdbcType="VARCHAR" property="pdfUrl" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+        <result column="filename" jdbcType="VARCHAR" property="filename" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="layer" jdbcType="INTEGER" property="layer" />
+        <result column="click" jdbcType="INTEGER" property="click" />
+        <result column="recentopen" jdbcType="TIMESTAMP" property="recentopen" />
+    </resultMap>
+
+    <resultMap id="PathResultMap" type="com.keke.entities.Paths">
+        <id column="pathId" jdbcType="INTEGER"  property="pathId" />
+        <result column="layer" jdbcType="INTEGER" property="layer" />
+        <result column="localPath" jdbcType="VARCHAR" property="localPath" />
+        <result column="beforePath" jdbcType="VARCHAR" property="beforePath" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    fid, original_url, pdf_url, create_time, keyword, filename,username, layer
+    </sql>
+
+    <sql id="Path_Column_List">
+    localPath, beforePath ,username, layer, createTime
+    </sql>
+
+    <delete id="deleteFile" parameterType="java.lang.Integer">
+        delete from files where fid = #{fid, jdbcType=INTEGER}
+    </delete>
+
+    <delete id="deleteFilesInFolder">
+        delete from files where original_url like concat(concat(concat('http://localhost:9527/docs',#{currentPath}),'/'),'%')
+    </delete>
+
+    <delete id="deleteFolder">
+        delete from paths where pathId = #{pathId, jdbcType=INTEGER} or beforePath like concat(#{currentPath},'%')
+    </delete>
+
+    <insert id="insertIntoFiles" parameterType="com.keke.entities.Files">
+    insert into files (original_url, pdf_url,filename,username,create_time,layer,click)
+    values (#{originalUrl,jdbcType=VARCHAR}, #{pdfUrl,jdbcType=VARCHAR},
+      #{filename,jdbcType=VARCHAR},#{username,jdbcType=VARCHAR},now(),#{layer, jdbcType=INTEGER},0)
+    </insert>
+
+    <insert id="insertNewFolder" parameterType="com.keke.entities.Paths">
+    insert into paths (localPath,beforePath,username,layer, createTime)
+    values (#{localPath,jdbcType=VARCHAR}, #{beforePath,jdbcType=VARCHAR},
+      #{username,jdbcType=VARCHAR},#{layer, jdbcType=INTEGER},now())
+    </insert>
+
+    <select id="selectAllFiles" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select *
+        from files
+        where
+        username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectMostClicks" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from files where username = #{username,jdbcType=VARCHAR} order by click desc LIMIT 20
+    </select>
+
+
+    <select id="selectCurrentFolders" resultMap="PathResultMap">
+        select * from paths where beforePath = #{beforePath, jdbcType=VARCHAR} and layer = #{layer, jdbcType=INTEGER} and username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPath" parameterType="java.lang.Integer" resultMap="PathResultMap">
+        select * from paths where pathId = #{pathId, jdbcType=INTEGER}
+    </select>
+
+    <select id="selectHomeFiles" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select *
+        from files
+        where
+        username = #{username,jdbcType=VARCHAR} and layer = 0
+    </select>
+
+    <select id="selectFiles" resultMap="BaseResultMap">
+        select *
+        from files
+        where
+        username = #{username,jdbcType=VARCHAR} and layer = #{layer, jdbcType=INTEGER} and original_url like concat(concat('%',#{currentPath}),'%')
+    </select>
+
+    <select id="selectFilename" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select filename from files where fid = #{fid, jdbcType=INTEGER}
+    </select>
+
+    <update id="updateOriginalFile">
+        update files set original_url = REPLACE(original_url,concat('/docs',#{oldPath}),concat('/docs',#{newPath})) where username = #{username,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updatePdfFile">
+        update files set pdf_url = REPLACE(pdf_url,concat('/docs',#{oldPath}),concat('/docs',#{newPath})) where username = #{username,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateFolder">
+        update paths set localPath = #{localPath, jdbcType=VARCHAR}
+        where pathId = #{pathId,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateOthersFolder">
+        update paths set beforePath = REPLACE(beforePath,#{oldPath},#{newPath})
+        where username = #{username,jdbcType=VARCHAR}
+    </update>
+
+    <update id="fileRename">
+        update files set original_url = REPLACE(original_url,#{oldName},#{newName}),pdf_url = REPLACE(pdf_url,#{oldName},#{newName}) ,filename = #{newName,jdbcType=VARCHAR} where fid = #{fid, jdbcType=INTEGER}
+    </update>
+
+    <update id="addClicks" parameterType="java.lang.Integer">
+        update files set click = click + 1 ,recentopen = now() where fid = #{fid,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateKeyword">
+        update files set keyword = #{keyword,jdbcType=VARCHAR} where fid = #{fid,jdbcType=INTEGER}
+    </update>
+
+</mapper>

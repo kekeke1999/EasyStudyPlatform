@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.RealTimeMapper">
+  <resultMap id="BaseResultMap" type="com.keke.domain.RealTime">
+    <id column="rid" jdbcType="INTEGER" property="rid" />
+    <result column="begin_time" jdbcType="TIMESTAMP" property="beginTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="last_time" jdbcType="TIME" property="lastTime" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    rid, begin_time, end_time, last_time, content, username, tag
+  </sql>
+
+  <select id="selectByDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from realtime
+    where begin_time like concat(concat('%',#{date}),'%') and username = #{username,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteRealTime">
+    delete from realtime
+    where rid = #{rid,jdbcType=INTEGER} and username = #{username,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertRealTime" parameterType="com.keke.domain.RealTime">
+    insert into realtime (begin_time, end_time,
+      last_time, content, username,
+      tag)
+    values (#{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+      #{lastTime,jdbcType=TIME}, #{content,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{tag,jdbcType=VARCHAR}
+  </insert>
+
+  <update id="updateRealTime" parameterType="com.keke.domain.RealTime">
+    update realtime
+    <set>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIME},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rid = #{rid,jdbcType=INTEGER}
+  </update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from realtime
+    where rid = #{rid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from realtime
+    where rid = #{rid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.keke.domain.RealTime">
+    insert into realtime (rid, begin_time, end_time,
+      last_time, content, username,
+      tag)
+    values (#{rid,jdbcType=INTEGER}, #{beginTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP},
+      #{lastTime,jdbcType=TIME}, #{content,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{tag,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.keke.domain.RealTime">
+    insert into realtime
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        rid,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="lastTime != null">
+        last_time,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="tag != null">
+        tag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        #{lastTime,jdbcType=TIME},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        #{tag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.keke.domain.RealTime">
+    update realtime
+    <set>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIME},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where rid = #{rid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.keke.domain.RealTime">
+    update realtime
+    set begin_time = #{beginTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      last_time = #{lastTime,jdbcType=TIME},
+      content = #{content,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR}
+    where rid = #{rid,jdbcType=INTEGER}
+  </update>
+</mapper>

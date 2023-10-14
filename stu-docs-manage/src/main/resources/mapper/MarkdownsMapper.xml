@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.keke.mapper.MarkdownsMapper">
+
+    <insert id="insertMarkdown">
+    insert into markdowns (content, title, username, createTime, updateTime)
+    values (#{content,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{username,jdbcType=VARCHAR},now(),now())
+    </insert>
+
+    <update id="updateMarkdown">
+        update markdowns set content = #{content,jdbcType=VARCHAR} and updateTime = now() where mid = #{mid,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectAllMarkdowns" resultType="com.keke.entities.Markdowns" parameterType="java.lang.String">
+        select * from markdowns where username = #{username,jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>
